@@ -1,0 +1,275 @@
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0f14;
+  --surface:   #151821;
+  --border:    #252a36;
+  --text:      #e2e8f0;
+  --muted:     #64748b;
+  --green:     #22c55e;
+  --red:       #ef4444;
+  --accent:    #38bdf8;
+  --accent2:   #818cf8;
+  --font-ui:   'Space Grotesk', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 60px;
+}
+
+/* ── HEADER ── */
+.header {
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 20px;
+}
+
+.logo {
+  font-family: var(--font-code);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.logo-bracket { color: var(--accent); }
+.logo-slash   { color: var(--accent2); }
+
+.difficulty-selector { display: flex; gap: 6px; }
+.diff-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.diff-btn:hover        { border-color: var(--accent); color: var(--accent); }
+.diff-btn.active       { background: var(--accent); border-color: var(--accent); color: #0d0f14; }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-value {
+  font-family: var(--font-code);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+  transition: color 0.2s;
+}
+.stat-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-track {
+  width: 100%;
+  max-width: 860px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+  transition: width 0.1s;
+}
+
+/* ── GAME AREA ── */
+.game-area {
+  width: 100%;
+  max-width: 860px;
+  position: relative;
+}
+
+.snippet-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  min-height: 140px;
+  margin-bottom: 16px;
+  cursor: text;
+}
+
+.snippet-display {
+  font-family: var(--font-code);
+  font-size: 18px;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* per-character states */
+.snippet-display span           { color: var(--muted); transition: color 0.05s; }
+.snippet-display span.correct   { color: var(--text); }
+.snippet-display span.wrong     { color: var(--red); background: rgba(239,68,68,0.15); border-radius: 2px; }
+.snippet-display span.cursor    { border-left: 2px solid var(--accent); margin-left: -1px; animation: blink 1s step-end infinite; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── TYPING INPUT (invisible, but focusable) ── */
+.typing-input {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: text;
+  font-size: 16px;
+}
+
+/* ── FOCUS PROMPT ── */
+.focus-prompt {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.focus-prompt.hidden { opacity: 0; }
+.focus-icon { color: var(--accent); font-size: 10px; }
+
+/* ── RESULTS OVERLAY ── */
+.results-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,15,20,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.results-overlay.hidden { display: none; }
+
+.results-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 48px;
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+.results-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 28px;
+  font-family: var(--font-code);
+}
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 28px;
+}
+.result-item { display: flex; flex-direction: column; align-items: center; }
+.result-value {
+  font-family: var(--font-code);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.result-label {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* ── LEADERBOARD ── */
+.lb-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.leaderboard-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.leaderboard-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-code);
+  font-size: 13px;
+  padding: 7px 12px;
+  background: var(--bg);
+  border-radius: 6px;
+  color: var(--text);
+}
+.leaderboard-list li:first-child { color: var(--accent); }
+.lb-score { font-weight: 600; }
+
+/* ── RESTART BUTTON ── */
+.restart-btn {
+  background: var(--accent);
+  color: #0d0f14;
+  border: none;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.restart-btn:hover  { opacity: 0.85; }
+.restart-btn:active { transform: scale(0.97); }
