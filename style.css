@@ -273,3 +273,35 @@ body {
 }
 .restart-btn:hover  { opacity: 0.85; }
 .restart-btn:active { transform: scale(0.97); }
+
+/* ── DAY 2: Syntax token colors ── */
+.tok-keyword  { color: #c084fc; }   /* purple  — const, let, function */
+.tok-string   { color: #86efac; }   /* green   — "hello" */
+.tok-number   { color: #fbbf24; }   /* amber   — 42, 3.14 */
+.tok-comment  { color: #475569; font-style: italic; } /* gray  — // note */
+.tok-class    { color: #67e8f9; }   /* cyan    — ClassName */
+.tok-function { color: #60a5fa; }   /* blue    — myFn( */
+.tok-default  { color: #94a3b8; }   /* muted   — everything else */
+
+/* correct typed chars keep a lighter version of their syntax color */
+.snippet-display span.correct { color: var(--text) !important; }
+.snippet-display span.wrong   { color: var(--red)  !important; background: rgba(239,68,68,0.15); border-radius: 2px; }
+
+/* ── DAY 3: Timer warning color + WPM color transitions ── */
+#timer-display { transition: color 0.3s; }
+#wpm-display   { transition: color 0.3s; }
+
+/* Cursor pulse — slightly brighter on active game */
+.game-active .snippet-display span.cursor {
+  border-left-color: var(--green);
+}
+
+/* Snippet wrapper scroll for long snippets */
+.snippet-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.snippet-wrapper::-webkit-scrollbar { width: 4px; }
+.snippet-wrapper::-webkit-scrollbar-track { background: transparent; }
+.snippet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
