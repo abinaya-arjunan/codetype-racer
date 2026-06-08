@@ -305,3 +305,67 @@ body {
 .snippet-wrapper::-webkit-scrollbar { width: 4px; }
 .snippet-wrapper::-webkit-scrollbar-track { background: transparent; }
 .snippet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── DAY 4: Results screen upgrades ── */
+.result-msg {
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  min-height: 20px;
+}
+
+.lb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 13px;
+  transition: background 0.2s;
+}
+.lb-row.lb-new {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.lb-rank  { color: var(--muted); font-size: 14px; }
+.lb-wpm   { color: var(--text); font-weight: 600; }
+.lb-wpm small { font-size: 10px; color: var(--muted); font-weight: 400; }
+.lb-acc   { color: var(--green); font-size: 12px; }
+.lb-date  { color: var(--muted); font-size: 11px; }
+.lb-empty { color: var(--muted); font-size: 13px; text-align: center; padding: 12px; }
+
+.clear-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  font-family: var(--font-ui);
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+.hint-text {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.hint-text kbd {
+  background: var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--font-code);
+  font-size: 10px;
+}

@@ -1,26 +1,48 @@
-// snippets.js — code snippet bank
-// Day 2: you will expand this array and add more per difficulty
+// timer.js — Day 3: improved timer with pause support and precise WPM
 
-const SNIPPETS = {
-  easy: [
-    `<h1>Hello World</h1>\n<p>This is a paragraph.</p>`,
-    `<ul>\n  <li>Item one</li>\n  <li>Item two</li>\n</ul>`,
-    `const name = "Alice";\nconsole.log("Hello, " + name);`,
-  ],
-  medium: [
-    `function add(a, b) {\n  return a + b;\n}\nconsole.log(add(3, 4));`,
-    `const nums = [1, 2, 3, 4];\nconst doubled = nums.map(n => n * 2);`,
-    `document.querySelector("button")\n  .addEventListener("click", () => {\n    alert("clicked!");\n  });`,
-  ],
-  hard: [
-    `async function getData(url) {\n  const res = await fetch(url);\n  const data = await res.json();\n  return data;\n}`,
-    `const debounce = (fn, delay) => {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n};`,
-  ],
-};
+let timerInterval = null;
+let secondsLeft   = 60;
+let startTime     = null;
+let pausedAt      = null;
+let totalPaused   = 0;
 
-// Returns a random snippet string for the given difficulty
-function getSnippet(level = "easy") {
-  const pool = SNIPPETS[level] || SNIPPETS.easy;
-  const index = Math.floor(Math.random() * pool.length);
-  return pool[index];
+function startTimer(onTick, onEnd) {
+  if (timerInterval) return; // already running
+  startTime   = Date.now() - totalPaused;
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    onTick(secondsLeft);
+    if (secondsLeft <= 0) {
+      stopTimer();
+      onEnd();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  stopTimer();
+  secondsLeft  = 60;
+  startTime    = null;
+  pausedAt     = null;
+  totalPaused  = 0;
+}
+
+// Precise WPM: (chars typed / 5) / actual minutes elapsed
+function calcWPM(charsTyped) {
+  if (!startTime) return 0;
+  const msElapsed = Date.now() - startTime;
+  const minutes   = msElapsed / 60000;
+  if (minutes < 0.01) return 0;
+  return Math.round((charsTyped / 5) / minutes);
+}
+
+// How many seconds have elapsed since start
+function getElapsedSeconds() {
+  if (!startTime) return 0;
+  return Math.floor((Date.now() - startTime) / 1000);
 }

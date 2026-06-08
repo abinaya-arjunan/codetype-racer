@@ -1,5 +1,4 @@
-// app.js — Day 3: bulletproof typing logic, backspace support,
-//          live WPM, accuracy, error highlighting, auto-scroll cursor
+// app.js — Day 4: results screen wired up, leaderboard saving, clear button
 
 // ── DOM refs ──
 const snippetDisplay  = document.getElementById("snippet-display");
@@ -14,18 +13,20 @@ const resultsOverlay  = document.getElementById("results-overlay");
 const resultWpm       = document.getElementById("result-wpm");
 const resultAcc       = document.getElementById("result-acc");
 const resultErrors    = document.getElementById("result-errors");
+const resultMsg       = document.getElementById("result-msg");
 const restartBtn      = document.getElementById("restart-btn");
+const clearBtn        = document.getElementById("clear-scores-btn");
 const diffBtns        = document.querySelectorAll(".diff-btn");
 
 // ── State ──
-let currentSnippet  = "";
-let currentTokens   = [];
-let currentLevel    = "easy";
-let totalTyped      = 0;
-let totalErrors     = 0;
-let errorSet        = new Set(); // track which indices were wrong
-let gameActive      = false;
-let gameEnded       = false;
+let currentSnippet = "";
+let currentTokens  = [];
+let currentLevel   = "easy";
+let totalTyped     = 0;
+let totalErrors    = 0;
+let errorSet       = new Set();
+let gameActive     = false;
+let gameEnded      = false;
 
 // ── Init ──
 function initGame() {
@@ -39,6 +40,7 @@ function initGame() {
   wpmDisplay.textContent      = "0";
   accuracyDisplay.textContent = "100";
   timerDisplay.textContent    = "60";
+  timerDisplay.style.color    = "var(--text)";
   errorsDisplay.textContent   = "0";
   progressFill.style.width    = "0%";
   resultsOverlay.classList.add("hidden");
@@ -65,26 +67,22 @@ function renderSnippet(tokens) {
       return `<span id="c${i}" class="${token.cls}">${char}</span>`;
     })
     .join("");
-
-  // Cursor on first char
   const first = document.getElementById("c0");
   if (first) first.classList.add("cursor");
 }
 
-// ── Core typing handler ──
+// ── Typing handler ──
 typingInput.addEventListener("input", handleInput);
 
 function handleInput() {
   if (gameEnded) return;
 
-  // Start timer on first keystroke
   if (!gameActive && typingInput.value.length > 0) {
     gameActive = true;
     focusPrompt.classList.add("hidden");
     startTimer(
       (secsLeft) => {
         timerDisplay.textContent = secsLeft;
-        // Color timer red in last 10 seconds
         timerDisplay.style.color = secsLeft <= 10 ? "var(--red)" : "var(--text)";
         updateStats();
       },
@@ -95,59 +93,48 @@ function handleInput() {
   const typed = typingInput.value;
   totalTyped  = typed.length;
 
-  // Update every character span
   for (let i = 0; i < currentTokens.length; i++) {
     const span = document.getElementById(`c${i}`);
     if (!span) continue;
     span.classList.remove("correct", "wrong", "cursor");
-
     if (i < typed.length) {
       if (typed[i] === currentTokens[i].char) {
         span.classList.add("correct");
-        // Remove from errorSet if corrected via backspace re-type
         errorSet.delete(i);
       } else {
         span.classList.add("wrong");
-        errorSet.add(i); // track unique error positions
+        errorSet.add(i);
       }
     } else if (i === typed.length) {
       span.classList.add("cursor");
-      scrollToCursor(span); // keep cursor in view
+      scrollToCursor(span);
     }
   }
 
-  // Total errors = unique wrong positions ever made
   totalErrors = errorSet.size;
-
   updateStats();
 
-  // Update progress bar
-  const pct = Math.min((typed.length / currentTokens.length) * 100, 100);
-  progressFill.style.width = pct + "%";
+  progressFill.style.width =
+    Math.min((typed.length / currentTokens.length) * 100, 100) + "%";
 
-  // Win condition: all chars typed
   if (typed.length >= currentTokens.length) endGame();
 }
 
-// ── Live stats updater ──
+// ── Stats updater ──
 function updateStats() {
   const wpm = calcWPM(totalTyped);
   const acc = totalTyped > 0
-    ? Math.round(((totalTyped - countCurrentErrors()) / totalTyped) * 100)
+    ? Math.max(Math.round(((totalTyped - countCurrentErrors()) / totalTyped) * 100), 0)
     : 100;
-
   wpmDisplay.textContent      = wpm;
-  accuracyDisplay.textContent = Math.max(acc, 0);
+  accuracyDisplay.textContent = acc;
   errorsDisplay.textContent   = totalErrors;
-
-  // Color WPM green if fast, amber if medium
   wpmDisplay.style.color =
     wpm >= 60 ? "var(--green)" :
     wpm >= 30 ? "#fbbf24"      :
     "var(--text)";
 }
 
-// Count errors in the currently typed portion only (not total unique)
 function countCurrentErrors() {
   const typed = typingInput.value;
   let count = 0;
@@ -157,31 +144,28 @@ function countCurrentErrors() {
   return count;
 }
 
-// Auto-scroll so cursor span stays visible inside snippet wrapper
 function scrollToCursor(span) {
   const wrapper = document.querySelector(".snippet-wrapper");
   if (!wrapper || !span) return;
-  const wrapperRect = wrapper.getBoundingClientRect();
-  const spanRect    = span.getBoundingClientRect();
-  if (spanRect.bottom > wrapperRect.bottom) {
-    wrapper.scrollTop += spanRect.bottom - wrapperRect.bottom + 20;
-  }
+  const wR = wrapper.getBoundingClientRect();
+  const sR = span.getBoundingClientRect();
+  if (sR.bottom > wR.bottom) wrapper.scrollTop += sR.bottom - wR.bottom + 20;
 }
 
-// ── Keyboard: handle Tab key (insert 2 spaces) & Escape to restart ──
+// ── Tab + Escape ──
 typingInput.addEventListener("keydown", (e) => {
   if (e.key === "Tab") {
     e.preventDefault();
-    const pos   = typingInput.selectionStart;
-    const val   = typingInput.value;
+    const pos = typingInput.selectionStart;
+    const val = typingInput.value;
     typingInput.value = val.slice(0, pos) + "  " + val.slice(pos);
     typingInput.selectionStart = typingInput.selectionEnd = pos + 2;
-    handleInput(); // trigger update manually after Tab
+    handleInput();
   }
   if (e.key === "Escape") initGame();
 });
 
-// ── End game ──
+// ── End game — NOW saves score and shows results ──
 function endGame() {
   if (gameEnded) return;
   gameEnded = true;
@@ -194,17 +178,37 @@ function endGame() {
     ? Math.max(Math.round(((totalTyped - countCurrentErrors()) / totalTyped) * 100), 0)
     : 100;
 
+  // Save to localStorage
+  saveScore(finalWpm, finalAcc);
+
+  // Populate result card
   resultWpm.textContent    = finalWpm;
   resultAcc.textContent    = finalAcc + "%";
   resultErrors.textContent = totalErrors;
 
-  // Day 4: saveScore(finalWpm, finalAcc);
-  renderLeaderboard();
+  // Motivational message based on WPM
+  const msg =
+    finalWpm >= 80 ? "🔥 Insane speed! You're a code machine." :
+    finalWpm >= 60 ? "⚡ Blazing fast — great run!" :
+    finalWpm >= 40 ? "💪 Solid. Keep pushing for 60 WPM." :
+    finalWpm >= 20 ? "🚀 Good effort! Practice makes perfect." :
+    "🌱 Just getting started — you've got this.";
+  if (resultMsg) resultMsg.textContent = msg;
+
+  // Render leaderboard, highlight this score if it's the new top
+  renderLeaderboard(finalWpm);
   resultsOverlay.classList.remove("hidden");
 }
 
-// ── Restart button & keyboard shortcut ──
+// ── Restart & clear buttons ──
 restartBtn.addEventListener("click", initGame);
+
+if (clearBtn) {
+  clearBtn.addEventListener("click", () => {
+    clearScores();
+    renderLeaderboard();
+  });
+}
 
 // ── Difficulty buttons ──
 diffBtns.forEach(btn => {
