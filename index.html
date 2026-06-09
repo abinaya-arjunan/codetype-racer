@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CodeType Racer</title>
+  <meta name="description" content="A typing speed game using real code snippets. Test your coding WPM across JS, HTML and CSS."/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
@@ -50,11 +51,8 @@
   <!-- MAIN GAME AREA -->
   <main class="game-area">
     <div class="snippet-wrapper">
-      <div class="snippet-display" id="snippet-display">
-        <!-- char spans injected by JS -->
-      </div>
+      <div class="snippet-display" id="snippet-display"></div>
     </div>
-
     <input
       type="text"
       id="typing-input"
@@ -63,20 +61,26 @@
       autocorrect="off"
       autocapitalize="off"
       spellcheck="false"
-      placeholder="Click here and start typing..."
       aria-label="Type the code snippet here"
     />
-
     <div class="focus-prompt" id="focus-prompt">
       <span class="focus-icon">&#9654;</span>
       <span>Click to focus &amp; start typing</span>
     </div>
   </main>
 
+  <!-- FOOTER -->
+  <footer class="footer">
+    Built with vanilla JS &nbsp;·&nbsp;
+    <a href="https://github.com/YOUR_USERNAME/codetype-racer" target="_blank" rel="noopener">View on GitHub</a>
+  </footer>
+
   <!-- RESULTS SCREEN -->
   <div class="results-overlay hidden" id="results-overlay">
     <div class="results-card">
       <h2 class="results-title">Round Complete</h2>
+      <p class="result-msg" id="result-msg"></p>
+
       <div class="results-stats">
         <div class="result-item">
           <span class="result-value" id="result-wpm">0</span>
@@ -91,19 +95,23 @@
           <span class="result-label">Errors</span>
         </div>
       </div>
-      <div class="leaderboard-section" id="leaderboard-section">
-        <h3 class="lb-title">Top Scores</h3>
+
+      <div class="leaderboard-section">
+        <div class="lb-header">
+          <h3 class="lb-title">TOP SCORES</h3>
+          <button class="clear-btn" id="clear-scores-btn">Clear</button>
+        </div>
         <ol class="leaderboard-list" id="leaderboard-list"></ol>
       </div>
-      <button class="restart-btn" id="restart-btn">Try Again</button>
+
+      <button class="restart-btn" id="restart-btn">Try Again &nbsp;↩</button>
+      <p class="hint-text">or press <kbd>Esc</kbd> anytime to restart</p>
     </div>
   </div>
 
-  <!-- SCRIPTS -->
   <script src="snippets.js"></script>
   <script src="timer.js"></script>
   <script src="leaderboard.js"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
