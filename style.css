@@ -1,6 +1,6 @@
 /* ── RESET & BASE ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
 :root {
   --bg:        #0d0f14;
   --surface:   #151821;
@@ -14,7 +14,7 @@
   --font-ui:   'Space Grotesk', sans-serif;
   --font-code: 'JetBrains Mono', monospace;
 }
-
+ 
 body {
   background: var(--bg);
   color: var(--text);
@@ -25,7 +25,7 @@ body {
   align-items: center;
   padding: 0 16px 60px;
 }
-
+ 
 /* ── HEADER ── */
 .header {
   width: 100%;
@@ -35,7 +35,7 @@ body {
   align-items: center;
   padding: 24px 0 20px;
 }
-
+ 
 .logo {
   font-family: var(--font-code);
   font-size: 20px;
@@ -44,7 +44,7 @@ body {
 }
 .logo-bracket { color: var(--accent); }
 .logo-slash   { color: var(--accent2); }
-
+ 
 .difficulty-selector { display: flex; gap: 6px; }
 .diff-btn {
   background: transparent;
@@ -60,7 +60,7 @@ body {
 }
 .diff-btn:hover        { border-color: var(--accent); color: var(--accent); }
 .diff-btn.active       { background: var(--accent); border-color: var(--accent); color: #0d0f14; }
-
+ 
 /* ── STATS BAR ── */
 .stats-bar {
   width: 100%;
@@ -97,7 +97,7 @@ body {
   letter-spacing: 0.08em;
   margin-top: 4px;
 }
-
+ 
 /* ── PROGRESS BAR ── */
 .progress-track {
   width: 100%;
@@ -115,14 +115,14 @@ body {
   border-radius: 2px;
   transition: width 0.1s;
 }
-
+ 
 /* ── GAME AREA ── */
 .game-area {
   width: 100%;
   max-width: 860px;
   position: relative;
 }
-
+ 
 .snippet-wrapper {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -132,7 +132,7 @@ body {
   margin-bottom: 16px;
   cursor: text;
 }
-
+ 
 .snippet-display {
   font-family: var(--font-code);
   font-size: 18px;
@@ -141,15 +141,15 @@ body {
   white-space: pre-wrap;
   word-break: break-all;
 }
-
+ 
 /* per-character states */
 .snippet-display span           { color: var(--muted); transition: color 0.05s; }
 .snippet-display span.correct   { color: var(--text); }
 .snippet-display span.wrong     { color: var(--red); background: rgba(239,68,68,0.15); border-radius: 2px; }
 .snippet-display span.cursor    { border-left: 2px solid var(--accent); margin-left: -1px; animation: blink 1s step-end infinite; }
-
+ 
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
+ 
 /* ── TYPING INPUT (invisible, but focusable) ── */
 .typing-input {
   position: absolute;
@@ -159,7 +159,7 @@ body {
   cursor: text;
   font-size: 16px;
 }
-
+ 
 /* ── FOCUS PROMPT ── */
 .focus-prompt {
   position: absolute;
@@ -175,7 +175,7 @@ body {
 }
 .focus-prompt.hidden { opacity: 0; }
 .focus-icon { color: var(--accent); font-size: 10px; }
-
+ 
 /* ── RESULTS OVERLAY ── */
 .results-overlay {
   position: fixed;
@@ -188,7 +188,7 @@ body {
   backdrop-filter: blur(4px);
 }
 .results-overlay.hidden { display: none; }
-
+ 
 .results-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -205,7 +205,7 @@ body {
   margin-bottom: 28px;
   font-family: var(--font-code);
 }
-
+ 
 .results-stats {
   display: flex;
   justify-content: center;
@@ -226,7 +226,7 @@ body {
   letter-spacing: 0.08em;
   margin-top: 4px;
 }
-
+ 
 /* ── LEADERBOARD ── */
 .lb-title {
   font-size: 12px;
@@ -256,7 +256,7 @@ body {
 }
 .leaderboard-list li:first-child { color: var(--accent); }
 .lb-score { font-weight: 600; }
-
+ 
 /* ── RESTART BUTTON ── */
 .restart-btn {
   background: var(--accent);
@@ -273,7 +273,7 @@ body {
 }
 .restart-btn:hover  { opacity: 0.85; }
 .restart-btn:active { transform: scale(0.97); }
-
+ 
 /* ── DAY 2: Syntax token colors ── */
 .tok-keyword  { color: #c084fc; }   /* purple  — const, let, function */
 .tok-string   { color: #86efac; }   /* green   — "hello" */
@@ -282,20 +282,20 @@ body {
 .tok-class    { color: #67e8f9; }   /* cyan    — ClassName */
 .tok-function { color: #60a5fa; }   /* blue    — myFn( */
 .tok-default  { color: #94a3b8; }   /* muted   — everything else */
-
+ 
 /* correct typed chars keep a lighter version of their syntax color */
 .snippet-display span.correct { color: var(--text) !important; }
 .snippet-display span.wrong   { color: var(--red)  !important; background: rgba(239,68,68,0.15); border-radius: 2px; }
-
+ 
 /* ── DAY 3: Timer warning color + WPM color transitions ── */
 #timer-display { transition: color 0.3s; }
 #wpm-display   { transition: color 0.3s; }
-
+ 
 /* Cursor pulse — slightly brighter on active game */
 .game-active .snippet-display span.cursor {
   border-left-color: var(--green);
 }
-
+ 
 /* Snippet wrapper scroll for long snippets */
 .snippet-wrapper {
   max-height: 200px;
@@ -305,7 +305,7 @@ body {
 .snippet-wrapper::-webkit-scrollbar { width: 4px; }
 .snippet-wrapper::-webkit-scrollbar-track { background: transparent; }
 .snippet-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
+ 
 /* ── DAY 4: Results screen upgrades ── */
 .result-msg {
   font-size: 14px;
@@ -313,14 +313,14 @@ body {
   margin-bottom: 20px;
   min-height: 20px;
 }
-
+ 
 .lb-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
-
+ 
 .lb-row {
   display: grid;
   grid-template-columns: 32px 1fr auto auto;
@@ -343,7 +343,7 @@ body {
 .lb-acc   { color: var(--green); font-size: 12px; }
 .lb-date  { color: var(--muted); font-size: 11px; }
 .lb-empty { color: var(--muted); font-size: 13px; text-align: center; padding: 12px; }
-
+ 
 .clear-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -356,7 +356,7 @@ body {
   transition: all 0.15s;
 }
 .clear-btn:hover { border-color: var(--red); color: var(--red); }
-
+ 
 .hint-text {
   font-size: 11px;
   color: var(--muted);
@@ -369,22 +369,22 @@ body {
   font-family: var(--font-code);
   font-size: 10px;
 }
-
+ 
 /* ══════════════════════════════════
    DAY 5 — Final polish & responsive
    ══════════════════════════════════ */
-
+ 
 /* Smooth page load fade-in */
 body {
   animation: fadeIn 0.4s ease;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
+ 
 /* ── Difficulty buttons: active state per level ── */
 .diff-btn[data-level="easy"].active   { background: var(--green);  border-color: var(--green);  color: #0d0f14; }
 .diff-btn[data-level="medium"].active { background: #fbbf24;       border-color: #fbbf24;       color: #0d0f14; }
 .diff-btn[data-level="hard"].active   { background: var(--red);    border-color: var(--red);    color: #fff; }
-
+ 
 /* ── Difficulty badge inside stats bar ── */
 .difficulty-badge {
   display: inline-block;
@@ -400,31 +400,31 @@ body {
 .badge-easy   { background: rgba(34,197,94,0.15);  color: var(--green); }
 .badge-medium { background: rgba(251,191,36,0.15); color: #fbbf24; }
 .badge-hard   { background: rgba(239,68,68,0.15);  color: var(--red); }
-
+ 
 /* ── Snippet wrapper: taller on desktop ── */
 .snippet-wrapper {
   max-height: 240px;
 }
-
+ 
 /* ── Typing input: show faint border when focused ── */
 .typing-input:focus + .focus-prompt { opacity: 0; }
 .game-area:focus-within .snippet-wrapper {
   border-color: rgba(56,189,248,0.3);
   transition: border-color 0.2s;
 }
-
+ 
 /* ── Results card: larger on desktop ── */
 .results-card {
   max-width: 500px;
 }
-
+ 
 /* ── Restart button: full width on mobile ── */
 .restart-btn {
   width: 100%;
   padding: 14px;
   font-size: 15px;
 }
-
+ 
 /* ── Footer ── */
 .footer {
   margin-top: 40px;
@@ -437,7 +437,7 @@ body {
   text-decoration: none;
 }
 .footer a:hover { text-decoration: underline; }
-
+ 
 /* ══════════════
    RESPONSIVE
    ══════════════ */
