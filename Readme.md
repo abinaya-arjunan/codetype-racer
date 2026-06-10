@@ -2,7 +2,7 @@
 
 A typing speed game built with **vanilla JavaScript** — but instead of random sentences, you type real code snippets.
 
-🔗 **[Live Demo](https://YOUR_USERNAME.github.io/codetype-racer)**
+🔗 **[Live Demo](https://abinaya-arjunan.github.io/codetype-racer)**
 
 ---
 
@@ -51,7 +51,7 @@ codetype-racer/
 ## How to Run Locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/codetype-racer.git
+git clone https://github.com/abinaya-arjunan/codetype-racer.git
 cd codetype-racer
 # open index.html in your browser — no build step needed
 ```
